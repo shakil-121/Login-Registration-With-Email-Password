@@ -5,7 +5,8 @@ import app from '../../Firebase/firebase.config';
 
 
 const auth = getAuth(app);
-const Login = () => { 
+const Login = () => {  
+    const [passwordshow,setPasswordShow]=useState(false);
     const [error,setError]=useState(''); 
     const [success,setSuccess]=useState(''); 
     const emailRef=useRef();
@@ -21,7 +22,8 @@ const Login = () => {
         signInWithEmailAndPassword(auth,email,password) 
         .then(result=>{ 
             const loggedUser=result.user;  
-            setSuccess('Login Successfully !')
+            setSuccess('Login Successfully !'); 
+            console.log(loggedUser);
         }) 
         .catch(error=>{ 
             console.log(error); 
@@ -46,6 +48,15 @@ const Login = () => {
         setError(error.message)
        })
    }
+//--------------------------------------
+// toggle password 
+const togglePassword=()=>{ 
+    setPasswordShow(!passwordshow)
+}
+
+
+
+
 //---------------------------------------------------------------------
     return (
         <div>
@@ -63,12 +74,13 @@ const Login = () => {
         <br /> 
         <br />
         <input
-          type="password"
+          type={passwordshow ? 'text' : 'password'}
           name="password"
           id="password"
           required
           placeholder="Enter your Password"
-        />
+        /> 
+        <button onClick={togglePassword}>Show Password</button>
         <br /> 
         <br />
         <input type="submit" value="Login" />

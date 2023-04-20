@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { createUserWithEmailAndPassword, getAuth, sendEmailVerification } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, sendEmailVerification, updateProfile } from "firebase/auth";
 import app from "../../Firebase/firebase.config";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -15,7 +15,8 @@ const Registration = () => {
     setError("");
     //collect data
     const email = event.target.email.value;
-    const password = event.target.password.value;
+    const password = event.target.password.value; 
+    const name=event.target.name.value; 
 
     //password validation with regular expression
     /**
@@ -43,7 +44,8 @@ const Registration = () => {
         setError("Your password minimum 6 charecter"); 
         return;
     }
-
+ 
+    
     // create user in firebase
     createUserWithEmailAndPassword(auth, email, password)
       .then((result) => {
@@ -52,13 +54,30 @@ const Registration = () => {
         event.target.reset();
         setError("");
         toast("Registration Successful !!"); 
-        sendVmail(loggeeduser);
+        sendVmail(loggeeduser); 
+        updateUserData(result.user,name)
       })
       .catch((error) => {
         setError(error.message);
       });
   }; 
 
+//update user profile (user name, profile photo etc)
+
+const updateUserData=(user,name)=>{ 
+
+  updateProfile(user,{
+    displayName:name
+  })
+  .then() 
+  .catch()
+}
+
+
+
+
+
+//-----------------------------------------------------
 
 //   Email Varification system build with firebase  
 
@@ -89,6 +108,15 @@ sendEmailVerification(User)
     <div>
       <form onSubmit={handelsubmit}>
         <h2>Registration Form</h2>
+        <br />
+        <input
+          type="name"
+          name="name"
+          id="name"
+          required
+          placeholder="Name"
+        />
+        <br />
         <br />
         <input
           onChange={handleEmail}
